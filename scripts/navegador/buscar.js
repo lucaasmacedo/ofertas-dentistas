@@ -5,7 +5,8 @@
 // (é só copiar os campos do termo em dados/rodada/termos.json)
 // Devolve os 4 melhores anúncios num formato compacto (a ferramenta do
 // navegador corta respostas longas):
-//   [id, titulo, preco_de, preco_por, desconto_pct, so_pix, vendidos, full, frete_gratis, imagem]
+//   [id, titulo, preco_de, preco_por, desconto_pct, so_pix, vendidos, full, frete_gratis, imagem, tipo]
+// tipo: "p" = produto de catálogo, "i" = anúncio comum
 // "imagem" é só o miolo do nome do arquivo; o endereço completo é
 //   https://http2.mlstatic.com/D_Q_NP_2X_<imagem>-E.webp
 (() => {
@@ -15,7 +16,16 @@
     const c = (el.querySelector(".andes-money-amount__cents") || {}).innerText || "00";
     return parseFloat(f.replace(/\./g, "") + "." + c);
   };
-  const idDe = (s) => (s.match(/MLB-?\d{6,}/i) || [""])[0].replace("-", "").toUpperCase();
+  // Descobre o código e o TIPO do anúncio pelo próprio link:
+  //   ".../p/MLB123..."  -> "p" (produto de catálogo, abre em www.mercadolivre.com.br/p/MLB123)
+  //   "item_id:MLB123" ou "MLB-123" -> "i" (anúncio comum, abre em produto.mercadolivre.com.br/MLB-123)
+  const idDe = (s) => {
+    let m = s.match(/\/p\/(MLB\d{6,})/i);
+    if (m) return { id: m[1].toUpperCase(), tipo: "p" };
+    m = s.match(/item_id(?:%3A|:|=)(MLB\d{6,})/i) || s.match(/(MLB)-(\d{6,})/i);
+    if (m) return { id: (m[2] ? "MLB" + m[2] : m[1]).toUpperCase(), tipo: "i" };
+    return null;
+  };
   const vistos = new Set();
   const cards = [...document.querySelectorAll(".poly-card")];
   const itens = cards.map((c) => {
@@ -24,7 +34,8 @@
     const txt = c.innerText.replace(/\s+/g, " ");
     const de = num(c.querySelector("s.andes-money-amount--previous"));
     const por = num(c.querySelector(".poly-price__current"));
-    const id = idDe(a.href) || idDe(c.innerHTML);
+    const ref = idDe(a.href) || idDe(c.innerHTML) || { id: "", tipo: "" };
+    const id = ref.id, tipo = ref.tipo;
     const img = (c.querySelector("img.poly-component__picture") || c.querySelector("img") || {}).src || "";
     const miolo = (img.match(/D_\w+?_2X_(.+?)-[A-Z]\.\w+$/) || img.match(/D_\w+?_(.+?)-[A-Z]\.\w+$/) || [])[1] || "";
     const vend = (txt.match(/\+?\s?([\d.]+)( mil)? vendidos/) || []);
@@ -34,7 +45,7 @@
       desc: de && por && de > por ? Math.round((1 - por / de) * 100) : 0,
       pix: /% OFF no Pix/i.test(txt) ? 1 : 0, vendidos,
       full: /FULL/.test(txt) ? 1 : 0, frete: /Frete gr[aá]tis|Chegará grátis|Chegar[aá] gr[aá]tis/i.test(txt) ? 1 : 0,
-      miolo,
+      miolo, tipo,
     };
   }).filter((x) => x && x.id && x.por && !vistos.has(x.id) && vistos.add(x.id));
 
@@ -54,6 +65,6 @@
   // Nota: desconto pesa mais; vendidos e envio Full/grátis desempatam
   const nota = (x) => x.desc + Math.min(15, Math.log10(1 + x.vendidos) * 4) + x.full * 3 + x.frete * 2;
   ok.sort((a, b) => nota(b) - nota(a));
-  const top = ok.slice(0, 4).map((x) => [x.id, x.titulo, x.de, x.por, x.desc, x.pix, x.vendidos, x.full, x.frete, x.miolo]);
+  const top = ok.slice(0, 4).map((x) => [x.id, x.titulo, x.de, x.por, x.desc, x.pix, x.vendidos, x.full, x.frete, x.miolo, x.tipo]);
   return JSON.stringify({ anuncios: itens.length, aprovados: ok.length, top });
 })()

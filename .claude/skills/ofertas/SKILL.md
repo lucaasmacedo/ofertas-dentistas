@@ -51,8 +51,11 @@ Fale pouco durante a execução; use a lista de tarefas para mostrar o progresso
   2. `javascript_tool` com o conteúdo de `scripts/navegador/link_afiliado.js`.
 - Gravar `dados/rodada/links.json` no formato `{ "<id_anuncio>": <json devolvido> }`.
 - Fechar a aba criada (`tabs_close_mcp`).
-- Se der "botão Compartilhar não encontrado" em todos: avisar que a conta de afiliado
-  pode estar deslogada no Chrome e parar.
+- Se der "botão Compartilhar não encontrado" em TODOS: avisar que a conta de afiliado
+  pode estar deslogada no Chrome e parar. Em um ou outro: produto fora do programa,
+  segue sem ele (não ficar recarregando).
+- Guardar também o `titulo` devolvido: o montar_rodada.py usa para conferir se a
+  página aberta era mesmo do produto escolhido.
 
 ## 6. Pegar as imagens
 
@@ -73,7 +76,7 @@ Fale pouco durante a execução; use a lista de tarefas para mostrar o progresso
 - Gravar `<scratchpad>/mapa.json` = `{ "<nome do .jpg>": "<id do asset>" }`.
 - `python scripts/preparar_painel.py <pasta>/painel <scratchpad>/mapa.json`
   -> imprime `doc_id caminho`. ArtifactData `batch` com um `set` por post
-  (`collection: ofertas`, `doc_id`, `file_path`).
+  (`collection: ofertas`, `doc_id`, `file_path` com o caminho ABSOLUTO).
 
 ## 9. Salvar e contar
 

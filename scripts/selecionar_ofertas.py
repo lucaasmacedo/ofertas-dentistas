@@ -53,12 +53,16 @@ def proibido(titulo):
     return next((p for p in PROIBIDOS if p in t), None)
 
 
-def url_produto(id_anuncio):
-    """MLB + 8/9 dígitos = produto de catálogo (/p/); 10+ dígitos = anúncio comum."""
-    numero = id_anuncio[3:]
-    if len(numero) <= 9:
+def url_produto(id_anuncio, tipo):
+    """
+    tipo "p" = produto de catálogo -> www.mercadolivre.com.br/p/MLB...
+    tipo "i" = anúncio comum       -> produto.mercadolivre.com.br/MLB-...
+    (O tipo vem do próprio link do anúncio na busca; o tamanho do número
+    NÃO serve para adivinhar, porque catálogos também podem ter 10 dígitos.)
+    """
+    if tipo == "p":
         return f"https://www.mercadolivre.com.br/p/{id_anuncio}"
-    return f"https://produto.mercadolivre.com.br/MLB-{numero}"
+    return f"https://produto.mercadolivre.com.br/MLB-{id_anuncio[3:]}"
 
 
 def main():
@@ -75,7 +79,9 @@ def main():
             print(f"✖ {t['termo']}: nenhum anúncio passou nos critérios "
                   f"({resultado.get('anuncios', 0)} anúncios na busca)")
             continue
-        for (id_, titulo, de, por, desc, pix, vendidos, full, frete, miolo) in top:
+        for item in top:
+            id_, titulo, de, por, desc, pix, vendidos, full, frete, miolo = item[:10]
+            tipo = item[10] if len(item) > 10 else "i"
             motivo_proibido = proibido(titulo)
             if motivo_proibido:
                 print(f"   pulado (proibido: {motivo_proibido}): {titulo[:60]}")
@@ -94,7 +100,7 @@ def main():
                 "desconto_pct": desc, "so_pix": bool(pix), "vendidos": vendidos,
                 "full": bool(full), "frete_gratis": bool(frete),
                 "url_imagem": f"https://http2.mlstatic.com/D_Q_NP_2X_{miolo}-E.webp",
-                "url_produto": url_produto(id_),
+                "url_produto": url_produto(id_, tipo),
             })
             print(f"✔ {t['termo']}: {titulo[:55]}  R$ {por:.2f} ({desc}% OFF)")
             break

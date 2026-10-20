@@ -22,7 +22,9 @@ Como rodar:
 
 import csv
 import json
+import re
 import sys
+import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -33,6 +35,23 @@ ARQ_USADOS = PASTA_PROJETO / "dados" / "termos_usados.csv"
 
 # Categorias de dispositivos médicos: o anúncio precisa citar a Anvisa
 EXIGE_ANVISA = {"hof-giro", "hof-insumos", "descartaveis", "odonto", "esterilizacao", "biosseguranca"}
+
+
+def mesmo_produto(titulo_escolhido, titulo_pagina):
+    """
+    Trava de segurança: confere se a página aberta é do produto escolhido.
+    Pelo menos metade das palavras importantes (4+ letras) do título escolhido
+    precisa aparecer no título da página.
+    """
+    if not titulo_pagina:
+        return False
+    def palavras(t):
+        t = unicodedata.normalize("NFD", t).encode("ascii", "ignore").decode().lower()
+        return {p for p in re.findall(r"[a-z0-9]+", t) if len(p) >= 4}
+    escolhidas = palavras(titulo_escolhido)
+    if not escolhidas:
+        return True
+    return len(escolhidas & palavras(titulo_pagina)) / len(escolhidas) >= 0.5
 
 
 def titulo_curto(titulo, limite=70):
@@ -73,7 +92,9 @@ def main():
     for o in selecionadas:
         info = links.get(o["id_anuncio"], {})
         achou = False
-        if not info.get("link"):
+        if info and not mesmo_produto(o["titulo"], info.get("titulo", "")):
+            print(f"✖ a página aberta era de OUTRO produto ({info.get('titulo', '?')[:40]}): {o['titulo'][:45]}")
+        elif not info.get("link"):
             print(f"✖ sem link de afiliado: {o['titulo'][:55]} ({info.get('erro', 'não gerado')})")
         elif o["categoria"] in EXIGE_ANVISA and not info.get("anvisa"):
             print(f"✖ sem registro Anvisa no anúncio: {o['titulo'][:55]}")

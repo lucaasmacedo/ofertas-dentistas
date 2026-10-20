@@ -83,7 +83,16 @@ com link de afiliado.
   ID `MLB\d+` (no link ou no HTML do card), imagem (`img.poly-component__picture`).
   Texto "XX% OFF no Pix" => desconto só no Pix (coluna `so_pix = sim`).
 - Links de busca podem ser rastreadores de anúncio (click1.mercadolivre...).
-  NÃO clicar neles: abrir o produto por `https://produto.mercadolivre.com.br/MLB-<numero>`.
+  NÃO clicar neles: abrir o produto pelo endereço montado a partir do código.
+- Código + TIPO vêm do link do anúncio (buscar.js): `/p/MLB...` = catálogo
+  (abre em `www.mercadolivre.com.br/p/MLB...`); `item_id:MLB...` ou `MLB-...` =
+  anúncio comum (abre em `produto.mercadolivre.com.br/MLB-...`). NUNCA adivinhar
+  o tipo pelo tamanho do número: catálogo também pode ter 10 dígitos
+  (erro real em 20/10: abriu uma "Tampa de Óleo" no lugar de uma torneira).
+- Trava: link_afiliado.js devolve o título da página e montar_rodada.py descarta
+  a oferta se o título não bater com o escolhido.
+- Alguns produtos não têm a barra de Afiliados (provavelmente fora do programa);
+  link_afiliado.js espera o botão até 6s; se não aparecer, a oferta fica de fora.
 - Link de afiliado: na página do produto, botão "Compartilhar" na barra de
   Afiliados (topo) abre "Gerar link / ID de produto"; ler o valor
   `https://meli.la/...` dos inputs. Gerar o link adiciona o produto em
