@@ -44,8 +44,12 @@ com link de afiliado.
   `ativo = sim`, começando pela prioridade alta. Cada linha tem termo de busca,
   desconto mínimo (%) e faixa de preço (R$). O Lucas edita esse arquivo
   (abre no Excel) para mudar o foco, sem mexer em código.
-- Foco do grupo: rotina de HOF (insumos, pós-procedimento/skincare,
-  consultório e fotos) + só o essencial de odonto geral.
+- Foco do grupo: itens de GIRO (recompra frequente), principalmente de HOF:
+  agulhas, cânulas, seringas, conectores, descartáveis, antissepsia.
+  A lista pode ser grande; a prioridade é que define o que sai mais.
+- Prioridade = peso no rodízio de cada rodada: ~60% das ofertas de
+  prioridade alta (giro), ~30% média, ~10% baixa (equipamentos e afins).
+  Dentro de cada prioridade, começar pelos termos há mais tempo sem oferta.
 - Volume: se um termo trouxer poucas ofertas na busca, avisar o Lucas para
   pausar (ativo = nao). Linhas pausadas não são apagadas.
 - Nunca buscar produtos regulados ou de venda restrita (toxina botulínica,

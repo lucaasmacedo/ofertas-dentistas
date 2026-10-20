@@ -1,46 +1,63 @@
 ativo,prioridade,categoria,termo_busca,desconto_min,preco_min,preco_max,observacao
-sim,alta,hof-insumos,microcanula 22g 25g,15,30,300,Uso único em HOF
-sim,alta,hof-insumos,seringa 1ml luer lock caixa,15,20,200,
-sim,alta,hof-insumos,agulha 30g 32g caixa,15,20,150,
-sim,media,hof-insumos,lapis dermatografico branco marcacao,20,10,80,Marcação facial antes do procedimento
-sim,media,hof-insumos,gaze esteril pacote,20,10,100,
-sim,media,hof-insumos,compressa de gel quente e frio,25,15,100,Pós-procedimento (edema)
-sim,alta,hof-pos,protetor solar facial com cor,20,40,200,Alto volume no ML; indicado no pós de todo procedimento
-sim,alta,hof-pos,creme cicatrizante reparador pele,20,30,150,Pós-procedimento; marcas de dermocosmético
-sim,media,hof-pos,serum vitamina c facial,20,40,250,Skincare de manutenção; alto volume
+sim,alta,hof-giro,agulha 30g 13x3 caixa,15,15,150,Giro: aplicação
+sim,alta,hof-giro,agulha 32g 4mm caixa,15,15,150,Giro: aplicação
+sim,alta,hof-giro,agulha 27g caixa,15,15,150,Giro
+sim,alta,hof-giro,"agulha 26g 13x4,5 caixa",15,15,150,Giro
+sim,alta,hof-giro,agulha 18g 40x12 caixa,15,15,120,Giro: aspiração e pertuito para cânula
+sim,alta,hof-giro,microcanula 22g 50mm,15,30,300,Giro: uso único
+sim,alta,hof-giro,microcanula 25g 50mm,15,30,300,Giro: uso único
+sim,alta,hof-giro,microcanula 27g 38mm,15,30,300,Giro: uso único
+sim,alta,hof-giro,microcanula 18g,15,30,300,Giro: uso único
+sim,alta,hof-giro,seringa 1ml luer lock caixa,15,20,200,Giro
+sim,alta,hof-giro,seringa 3ml luer lock caixa,15,20,200,Giro
+sim,alta,hof-giro,seringa 5ml luer lock caixa,15,20,200,Giro
+sim,alta,hof-giro,"seringa insulina 0,3ml agulha acoplada caixa",15,20,200,Giro
+sim,alta,hof-giro,torneira 3 vias descartavel,15,10,150,Giro: diluição e mistura
+sim,alta,hof-giro,conector luer lock femea femea,15,10,150,Giro: transferência entre seringas
+sim,alta,hof-giro,gaze esteril pacote,20,10,100,Giro
+sim,alta,hof-giro,algodao hidrofilo rolo,20,10,80,Giro
+sim,alta,hof-giro,alcool 70 liquido 1 litro,20,8,60,Giro: antissepsia de superfície
+sim,alta,hof-giro,"clorexidina alcoolica 0,5 1 litro",20,15,120,Giro: antissepsia da pele (conferir registro)
+sim,alta,hof-giro,lapis dermatografico branco marcacao,20,10,80,Giro: marcação facial
+sim,alta,descartaveis,luva nitrilica procedimento caixa,20,20,150,Giro: consumo diário
+sim,alta,descartaveis,luva cirurgica esteril par,20,20,200,Giro
+sim,alta,descartaveis,mascara tripla descartavel caixa,20,10,100,Giro
+sim,alta,descartaveis,touca descartavel sanfonada,20,8,60,Giro
+sim,alta,descartaveis,lencol descartavel rolo,20,20,150,Giro
+sim,alta,descartaveis,campo fenestrado descartavel esteril,20,15,150,Giro
+sim,media,descartaveis,campo cirurgico descartavel,20,15,150,
+sim,media,descartaveis,sugador descartavel odontologico,20,8,80,
+sim,media,hof-pos,protetor solar facial com cor,20,40,200,Alto volume; pós de todo procedimento
+sim,media,hof-pos,creme cicatrizante reparador pele,20,30,150,Pós-procedimento
+sim,media,hof-pos,compressa de gel quente e frio,25,15,100,Pós-procedimento (edema)
+sim,media,hof-pos,serum vitamina c facial,20,40,250,
 sim,media,hof-pos,acido hialuronico serum topico,20,40,250,Sérum cosmético (NÃO injetável)
 sim,media,hof-pos,agua termal spray,20,30,150,
-sim,alta,hof-consultorio,ring light profissional com tripe,20,80,600,Fotos de antes e depois
-sim,media,hof-consultorio,paquimetro digital,20,30,250,Medidas e proporções faciais
-sim,media,hof-consultorio,termometro digital maxima minima geladeira,20,20,150,Controle de temperatura dos termolábeis (exigido)
-sim,media,hof-consultorio,caixa termica pequena com gelo reutilizavel,20,30,200,Transporte de termolábeis
-sim,media,hof-consultorio,espelho de mao grande paciente,20,30,200,
-sim,alta,descartaveis,luva nitrilica procedimento caixa,20,20,150,Consumo diário; recompra constante
-sim,alta,descartaveis,mascara tripla descartavel caixa,20,10,100,
-sim,media,descartaveis,touca descartavel sanfonada,20,8,60,
-sim,media,descartaveis,lencol descartavel rolo,20,20,150,
-sim,media,odonto,resina composta fotopolimerizavel,15,40,400,Essencial de odonto geral
-sim,media,odonto,fotopolimerizador led odontologico,15,150,2500,Ticket alto
-sim,baixa,odonto,ponta diamantada kit,20,20,300,
-sim,media,vestuario,jaleco feminino acinturado,25,60,400,Alto volume
+sim,media,odonto,resina composta fotopolimerizavel,15,40,400,Giro em odonto geral
+sim,media,odonto,ponta diamantada kit,20,20,300,Giro em odonto geral
+sim,media,esterilizacao,envelope grau cirurgico autoselante,20,20,150,Giro
+sim,media,esterilizacao,indicador biologico autoclave,15,40,400,Giro: teste semanal exigido
+sim,media,biosseguranca,coletor perfurocortante descarpack,20,15,120,Giro: descarte
+sim,baixa,hof-consultorio,ring light profissional com tripe,20,80,600,Equipamento
+sim,baixa,hof-consultorio,paquimetro digital,20,30,250,Equipamento
+sim,baixa,hof-consultorio,termometro digital maxima minima geladeira,20,20,150,Controle dos termolábeis
+sim,baixa,hof-consultorio,caixa termica pequena com gelo reutilizavel,20,30,200,
+sim,baixa,hof-consultorio,espelho de mao grande paciente,20,30,200,
+sim,baixa,hof-consultorio,refrigerador para medicamentos vacinas,10,1500,8000,Equipamento; ticket alto
+sim,baixa,hof-consultorio,afastador labial fotografia odontologica,20,20,200,
+sim,baixa,odonto,fotopolimerizador led odontologico,15,150,2500,Equipamento; ticket alto
+sim,baixa,odonto,caneta alta rotacao odontologica,15,250,3000,Equipamento
+sim,baixa,odonto,micromotor contra angulo odontologico,15,300,3500,Equipamento
+sim,baixa,odonto,adesivo dental universal,15,40,350,
+sim,baixa,odonto,kit espatula resina odontologica,20,30,400,
+sim,baixa,odonto,alicate ortodontico,20,40,500,
+sim,baixa,odonto,lupa odontologica binocular,15,200,4000,Equipamento
+sim,baixa,esterilizacao,autoclave odontologica,10,1500,9000,Equipamento; ticket alto
+sim,baixa,esterilizacao,lavadora ultrassonica odontologica,15,300,3000,Equipamento
+sim,baixa,consultorio,mocho odontologico,15,200,2500,Equipamento
+sim,baixa,vestuario,jaleco feminino acinturado,25,60,400,
 sim,baixa,vestuario,scrub pijama cirurgico,25,60,300,
-sim,baixa,home-care,irrigador oral,20,80,600,Líder em higiene bucal no ML
-nao,baixa,odonto,caneta alta rotacao odontologica,15,250,3000,Pausado: muito odonto
-nao,baixa,odonto,micromotor contra angulo odontologico,15,300,3500,Pausado: muito odonto
-nao,baixa,odonto,adesivo dental universal,15,40,350,Pausado: muito odonto
-nao,baixa,odonto,sugador descartavel odontologico,20,8,80,Pausado: muito odonto
-nao,baixa,odonto,kit espatula resina odontologica,20,30,400,Pausado: muito odonto
-nao,baixa,odonto,alicate ortodontico,20,40,500,Pausado: muito odonto
-nao,baixa,odonto,lupa odontologica binocular,15,200,4000,Pausado: pouca oferta
-nao,baixa,esterilizacao,autoclave odontologica,10,1500,9000,Pausado: pouca oferta
-nao,baixa,esterilizacao,envelope grau cirurgico autoselante,20,20,150,Pausado
-nao,baixa,esterilizacao,indicador biologico autoclave,15,40,400,Pausado: pouca oferta
-nao,baixa,esterilizacao,lavadora ultrassonica odontologica,15,300,3000,Pausado: pouca oferta
-nao,baixa,biosseguranca,coletor perfurocortante descarpack,20,15,120,Pausado: pouca oferta
-nao,baixa,hof-consultorio,refrigerador para medicamentos vacinas,10,1500,8000,Pausado: pouca oferta
-nao,baixa,hof-consultorio,afastador labial fotografia odontologica,20,20,200,Pausado
-nao,baixa,consultorio,mocho odontologico,15,200,2500,Pausado
-nao,baixa,vestuario,oculos protecao odontologico,25,15,120,Pausado
-nao,baixa,home-care,escova ortodontica,25,10,80,Pausado
-nao,baixa,descartaveis,campo cirurgico descartavel,20,15,150,Pausado
+sim,baixa,vestuario,oculos protecao odontologico,25,15,120,
+sim,baixa,home-care,irrigador oral,20,80,600,
+sim,baixa,home-care,escova ortodontica,25,10,80,
 nao,baixa,estudo,livro harmonizacao orofacial,15,50,500,Ativar quando quiser variar o conteúdo
