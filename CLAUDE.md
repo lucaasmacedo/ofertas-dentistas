@@ -38,8 +38,18 @@ com link de afiliado.
   sincronizar esses status de volta para `dados/historico.csv`.
 - Documentos com `exemplo: true` são de demonstração e podem ser apagados.
 
+## Nichos (o que buscar)
+
+- `config/nichos.csv` define o que a etapa do navegador busca: só linhas com
+  `ativo = sim`, começando pela prioridade alta. Cada linha tem termo de busca,
+  desconto mínimo (%) e faixa de preço (R$). O Lucas edita esse arquivo
+  (abre no Excel) para mudar o foco, sem mexer em código.
+- Nunca buscar produtos regulados ou de venda restrita (toxina botulínica,
+  preenchedores/ácido hialurônico injetável, anestésicos, medicamentos).
+
 ## Como fazer uma rodada (passo a passo para o Claude)
 
+0. Ler `config/nichos.csv`.
 1. Preencher `dados/ofertas_rodada.csv` (etapa do navegador). Imagem pela
    coluna `url_imagem` ou, se já salva, pelo caminho em `arquivo_imagem`.
    Atenção: o ambiente na nuvem não acessa os servidores de imagem do
