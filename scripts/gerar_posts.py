@@ -113,12 +113,15 @@ def montar_texto(oferta):
     preco_por = para_numero(oferta["preco_por"])
     desconto = round((1 - preco_por / preco_de) * 100) if preco_de > preco_por else 0
 
+    # Se o preço com desconto vale só no Pix, o post precisa dizer isso
+    no_pix = " no Pix" if str(oferta.get("so_pix", "")).strip().lower() in ("sim", "true", "1") else ""
+
     linhas = [f"🦷 *{oferta['titulo']}*", ""]
     if desconto > 0:
         linhas.append(f"~De {formatar_reais(preco_de)}~")
-        linhas.append(f"🔥 *Por {formatar_reais(preco_por)}* ({desconto}% OFF)")
+        linhas.append(f"🔥 *Por {formatar_reais(preco_por)}{no_pix}* ({desconto}% OFF)")
     else:
-        linhas.append(f"🔥 *{formatar_reais(preco_por)}*")
+        linhas.append(f"🔥 *{formatar_reais(preco_por)}{no_pix}*")
     if oferta.get("por_que_vale"):
         linhas += ["", f"✅ {oferta['por_que_vale']}"]
     linhas += ["", f"👉 {oferta['link_afiliado']}"]

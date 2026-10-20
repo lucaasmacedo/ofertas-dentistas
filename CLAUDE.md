@@ -73,6 +73,30 @@ com link de afiliado.
    `imagem_asset` com o id devolvido, e gravar em `ofertas/<doc_id>` (batch).
 5. Commit + push do `dados/historico.csv`.
 
+## Etapa do navegador (aprendido no reconhecimento de 20/10/2026)
+
+- Busca: abrir `https://lista.mercadolivre.com.br/<termo-com-hifens>`.
+  Cada anúncio é um `.poly-card`. Extrair com javascript_tool:
+  título (`a.poly-component__title`), preço atual (`.poly-price__current`),
+  preço antigo (`s.andes-money-amount--previous`), frações em
+  `.andes-money-amount__fraction` + `.andes-money-amount__cents`,
+  ID `MLB\d+` (no link ou no HTML do card), imagem (`img.poly-component__picture`).
+  Texto "XX% OFF no Pix" => desconto só no Pix (coluna `so_pix = sim`).
+- Links de busca podem ser rastreadores de anúncio (click1.mercadolivre...).
+  NÃO clicar neles: abrir o produto por `https://produto.mercadolivre.com.br/MLB-<numero>`.
+- Link de afiliado: na página do produto, botão "Compartilhar" na barra de
+  Afiliados (topo) abre "Gerar link / ID de produto"; ler o valor
+  `https://meli.la/...` dos inputs. Gerar o link adiciona o produto em
+  "Minhas recomendações" (normal). Fechar o painel com Escape.
+- Imagens: o navegador baixa, mas a extensão bloqueia trazer a imagem para cá,
+  e a nuvem do Claude não acessa mlstatic.com. Solução: GitHub Actions.
+  1. Escrever `dados/imagens_pendentes.csv` (nome,url) e dar push.
+  2. O workflow `baixar-imagens.yml` baixa, converte para JPG e grava no
+     branch `imagens` (substituído a cada execução).
+  3. `git clone --depth 1 -b imagens` e usar os arquivos em `arquivo_imagem`.
+  Disparo manual: `gh api -X POST repos/lucaasmacedo/ofertas-dentistas/actions/workflows/baixar-imagens.yml/dispatches -f ref=main`
+  (o `gh workflow run` não funciona aqui).
+
 ## Sincronizar o que foi publicado
 
 1. Ler a coleção `ofertas` do painel com `out_dir` (um JSON por post).
