@@ -40,7 +40,7 @@
 
   // Relevância: o título precisa ter o produto e pelo menos uma das medidas.
   // Normaliza: sem acentos, minúsculas, "1 ml" -> "1ml", "01ml" -> "1ml", "4,5" -> "4.5"
-  const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+  const norm = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/(\d),(\d)/g, "$1.$2").replace(/(\d)\s+(ml|mm|g|cm|un|l)\b/g, "$1$2").replace(/\b0+(\d)/g, "$1");
   const relevante = (t) => {
     const n = norm(t), k = P.chaves || { produto: "", medidas: [] };
