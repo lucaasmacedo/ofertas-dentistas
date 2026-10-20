@@ -1,0 +1,6 @@
+id_anuncio,titulo,categoria,preco_de,preco_por,por_que_vale,link_afiliado,url_imagem
+TESTE001,Luva de Procedimento Nitrílica Caixa 100un,descartaveis,"49,90","32,90",Menor preço dos últimos 30 dias,https://exemplo.com/link-afiliado-1,
+TESTE002,Seringa Descartável 1ml Caixa 100un,descartaveis,"89,00","61,50",Ideal para HOF,https://exemplo.com/link-afiliado-2,
+TESTE003,Máscara Tripla Camada Caixa 50un,descartaveis,"25,00","14,90",Frete grátis,https://exemplo.com/link-afiliado-3,
+TESTE004,Touca Descartável Sanfonada 100un,descartaveis,"19,90","12,90",,https://exemplo.com/link-afiliado-4,
+TESTE005,Fotopolimerizador LED Sem Fio,equipamentos,"599,00","399,00",Bateria dura o dia todo,https://exemplo.com/link-afiliado-5,

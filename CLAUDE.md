@@ -18,7 +18,18 @@ com link de afiliado.
   entra como "sugerida"; o Lucas só avisa quando NÃO publicou alguma.
 - `dados/` - entradas e saídas de cada rodada.
 - `scripts/` - código Python.
-- `saida/` - posts prontos (texto + imagem) de cada rodada. Não vai para o GitHub.
+- `saida/AAAA-MM-DD/HHhMM/` - posts prontos (posts.txt + imagens) de cada rodada.
+  Não vai para o GitHub.
+- `scripts/gerar_posts.py` - aplica as regras e gera os posts. `--simular` testa
+  sem gravar no histórico.
+- `dados/ofertas_rodada.csv` - entrada da rodada (preenchida pela etapa do
+  navegador). Formato de exemplo em `dados/exemplo_ofertas.csv`.
+
+## Regras de repetição (configuráveis no topo de gerar_posts.py)
+
+- Mesmo produto só volta depois de 2 dias.
+- Exceção: se o preço caiu desde a última vez, pode voltar antes.
+- Máximo de 3 ofertas da mesma categoria por dia; máximo de 10 posts por rodada.
 
 ## Regras
 
