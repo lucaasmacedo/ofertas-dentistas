@@ -1,0 +1,27 @@
+# Robô do GitHub que baixa as imagens das ofertas.
+# Dispara sozinho sempre que dados/imagens_pendentes.csv muda no GitHub.
+# O resultado fica guardado como "artifact" da execução (some em 7 dias),
+# de onde o Claude pega as imagens para subir no Painel de Ofertas.
+name: Baixar imagens das ofertas
+
+on:
+  push:
+    paths:
+      - dados/imagens_pendentes.csv
+  workflow_dispatch: {}   # permite rodar na mão pela aba Actions
+
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - run: python scripts/baixar_imagens.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: imagens
+          path: imagens_baixadas/
+          retention-days: 7
