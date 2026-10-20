@@ -1,0 +1,131 @@
+"""
+Junta tudo da rodada num único arquivo para o gerar_posts.py.
+
+Entradas:
+  dados/rodada/selecionadas.json -> ofertas escolhidas (selecionar_ofertas.py)
+  dados/rodada/links.json        -> resultado do link_afiliado.js para cada oferta:
+      { "<id_anuncio>": {"preco": 30.94, "anvisa": 1, "link": "https://meli.la/..."}, ... }
+  <pasta_imagens>                -> pasta com <id_anuncio>.jpg (branch "imagens")
+
+Regras:
+  - sem link de afiliado: fica de fora
+  - produto profissional (insumo, descartável, odonto...) sem "Anvisa" no anúncio: fica de fora
+  - preço mudou na página: usa o preço novo; se o desconto cair abaixo do mínimo, fica de fora
+
+Saídas:
+  dados/ofertas_rodada.csv  -> entrada do gerar_posts.py
+  dados/termos_usados.csv   -> registro do rodízio (data, termo, achou)
+
+Como rodar:
+  python scripts/montar_rodada.py <pasta_imagens>
+"""
+
+import csv
+import json
+import sys
+from datetime import date
+from pathlib import Path
+
+PASTA_PROJETO = Path(__file__).resolve().parent.parent
+PASTA_RODADA = PASTA_PROJETO / "dados" / "rodada"
+ARQ_SAIDA = PASTA_PROJETO / "dados" / "ofertas_rodada.csv"
+ARQ_USADOS = PASTA_PROJETO / "dados" / "termos_usados.csv"
+
+# Categorias de dispositivos médicos: o anúncio precisa citar a Anvisa
+EXIGE_ANVISA = {"hof-giro", "hof-insumos", "descartaveis", "odonto", "esterilizacao", "biosseguranca"}
+
+
+def titulo_curto(titulo, limite=70):
+    """Corta títulos longos na última palavra inteira."""
+    if len(titulo) <= limite:
+        return titulo
+    return titulo[:limite].rsplit(" ", 1)[0]
+
+
+def por_que_vale(o, anvisa):
+    """Monta a linha de 'por que vale' com fatos do anúncio."""
+    partes = []
+    v = o["vendidos"] or 0
+    if v >= 1000:
+        partes.append(f"Mais de {int(v // 1000)} mil vendidos")
+    elif v >= 100:
+        partes.append(f"Mais de {int(v)} vendidos")
+    if o["full"]:
+        partes.append("envio Full")
+    elif o["frete_gratis"]:
+        partes.append("frete grátis")
+    if anvisa:
+        partes.append("registro Anvisa")
+    texto = " · ".join(partes)
+    return texto[:1].upper() + texto[1:] if texto else ""
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Uso: python scripts/montar_rodada.py <pasta_imagens>")
+        return
+    pasta_imagens = Path(sys.argv[1])
+    selecionadas = json.loads((PASTA_RODADA / "selecionadas.json").read_text(encoding="utf-8"))
+    links_arq = PASTA_RODADA / "links.json"
+    links = json.loads(links_arq.read_text(encoding="utf-8")) if links_arq.exists() else {}
+
+    linhas, usados = [], []
+    for o in selecionadas:
+        info = links.get(o["id_anuncio"], {})
+        achou = False
+        if not info.get("link"):
+            print(f"✖ sem link de afiliado: {o['titulo'][:55]} ({info.get('erro', 'não gerado')})")
+        elif o["categoria"] in EXIGE_ANVISA and not info.get("anvisa"):
+            print(f"✖ sem registro Anvisa no anúncio: {o['titulo'][:55]}")
+        else:
+            por = info.get("preco") or o["preco_por"]
+            de = max(o["preco_de"], por)
+            desconto = round((1 - por / de) * 100) if de > por else 0
+            if por != o["preco_por"]:
+                print(f"  preço mudou: {o['titulo'][:45]}  {o['preco_por']} -> {por}")
+            if desconto < o["desconto_min"]:
+                print(f"✖ desconto caiu para {desconto}%: {o['titulo'][:55]}")
+            else:
+                imagem = pasta_imagens / f"{o['id_anuncio']}.jpg"
+                if not imagem.exists():
+                    print(f"  ⚠️ sem imagem baixada: {o['titulo'][:55]}")
+                linhas.append({
+                    "id_anuncio": o["id_anuncio"],
+                    "titulo": titulo_curto(o["titulo"]),
+                    "categoria": o["categoria"],
+                    "preco_de": f"{de:.2f}".replace(".", ","),
+                    "preco_por": f"{por:.2f}".replace(".", ","),
+                    "so_pix": "sim" if o["so_pix"] else "nao",
+                    "por_que_vale": por_que_vale(o, info.get("anvisa")),
+                    "link_afiliado": info["link"],
+                    "url_imagem": "",
+                    "arquivo_imagem": str(imagem) if imagem.exists() else "",
+                })
+                achou = True
+        usados.append({"data": date.today().isoformat(), "termo": o["termo"], "achou": "sim" if achou else "nao"})
+
+    # Termos buscados que não renderam oferta também entram no rodízio,
+    # para não serem sorteados de novo logo em seguida
+    termos = json.loads((PASTA_RODADA / "termos.json").read_text(encoding="utf-8"))
+    ja = {u["termo"] for u in usados}
+    usados += [{"data": date.today().isoformat(), "termo": t["termo"], "achou": "nao"}
+               for t in termos if t["termo"] not in ja]
+
+    with open(ARQ_SAIDA, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["id_anuncio", "titulo", "categoria", "preco_de", "preco_por",
+                                          "so_pix", "por_que_vale", "link_afiliado", "url_imagem", "arquivo_imagem"])
+        w.writeheader()
+        w.writerows(linhas)
+
+    novo = not ARQ_USADOS.exists()
+    with open(ARQ_USADOS, "a", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["data", "termo", "achou"])
+        if novo:
+            w.writeheader()
+        w.writerows(usados)
+
+    print(f"\n{len(linhas)} oferta(s) prontas em {ARQ_SAIDA.name}. Próximo passo: python scripts/gerar_posts.py")
+
+
+if __name__ == "__main__":
+    main()
