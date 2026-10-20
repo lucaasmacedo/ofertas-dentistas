@@ -1,11 +1,11 @@
 ---
-name: ofertas
-description: Roda uma rodada completa de ofertas do Mercado Livre para o grupo de dentistas/HOF do Lucas (busca, seleção, link de afiliado, imagem e envio ao Painel de Ofertas). Use quando o Lucas pedir /ofertas, "roda as ofertas" ou uma nova rodada.
+name: ofertas-hof
+description: Roda uma rodada completa de ofertas do Mercado Livre para o grupo de dentistas/HOF do Lucas (busca, seleção, link de afiliado, imagem e envio ao Painel de Ofertas). Use quando o Lucas pedir /ofertas-hof, "roda as ofertas" ou uma nova rodada.
 ---
 
-# /ofertas: rodada completa de ofertas
+# /ofertas-hof: rodada completa de ofertas
 
-Argumento opcional: número de ofertas da rodada (padrão 10). Ex.: `/ofertas 5`.
+Argumento opcional: número de ofertas da rodada (padrão 10). Ex.: `/ofertas-hof 5`.
 O Lucas está aprendendo: no fim, explique em português simples o que saiu.
 Fale pouco durante a execução; use a lista de tarefas para mostrar o progresso.
 
