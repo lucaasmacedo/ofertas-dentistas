@@ -1,18 +1,31 @@
 ativo,prioridade,categoria,termo_busca,desconto_min,preco_min,preco_max,observacao
-sim,alta,descartaveis,luva nitrilica procedimento caixa,20,20,150,Consumo diário; sempre tem procura
+sim,alta,descartaveis,luva nitrilica procedimento caixa,20,20,150,Consumo diário; recompra constante
 sim,alta,descartaveis,mascara tripla descartavel caixa,20,10,100,
 sim,media,descartaveis,sugador descartavel odontologico,20,8,80,
 sim,media,descartaveis,campo cirurgico descartavel,20,15,150,
-sim,media,descartaveis,touca descartavel sanfonada,20,8,60,
-sim,alta,hof,microcanula 22g 25g,15,30,300,Uso em HOF
+sim,baixa,descartaveis,touca descartavel sanfonada,20,8,60,
+sim,alta,restauradores,resina composta fotopolimerizavel,15,40,400,Usada em boa parte dos procedimentos; marcas conhecidas (FGM; 3M/Solventum; Ultradent; Ivoclar)
+sim,media,restauradores,adesivo dental universal,15,40,350,
+sim,alta,rotatorios,ponta diamantada kit,20,20,300,Consumo frequente
+sim,alta,rotatorios,caneta alta rotacao odontologica,15,250,3000,Peça de mão; ticket alto
+sim,media,rotatorios,micromotor contra angulo odontologico,15,300,3500,
+sim,alta,esterilizacao,autoclave odontologica,10,1500,9000,Obrigatória no consultório; ticket alto
+sim,media,esterilizacao,envelope grau cirurgico autoselante,20,20,150,Consumo constante
+sim,media,esterilizacao,indicador biologico autoclave,15,40,400,Testes exigidos pela vigilância sanitária
+sim,media,esterilizacao,lavadora ultrassonica odontologica,15,300,3000,
+sim,media,biosseguranca,coletor perfurocortante descarpack,20,15,120,Exigido para descarte
+sim,alta,hof,microcanula 22g 25g,15,30,300,Uso único em HOF
 sim,alta,hof,seringa 1ml luer lock caixa,15,20,200,Uso em HOF
 sim,media,hof,agulha 30g caixa,15,20,150,
-sim,alta,instrumentais,kit espatula resina odontologica,20,30,400,
-sim,media,instrumentais,alicate ortodontico,20,40,500,
+sim,alta,hof,refrigerador para medicamentos vacinas,10,1500,8000,HOF exige geladeira própria para termolábeis (não pode frigobar comum)
+sim,media,hof,afastador labial fotografia odontologica,20,20,200,Fotos de antes e depois
+sim,media,instrumentais,kit espatula resina odontologica,20,30,400,
+sim,baixa,instrumentais,alicate ortodontico,20,40,500,
 sim,alta,equipamentos,fotopolimerizador led odontologico,15,150,2500,Ticket alto; comissão maior
 sim,media,equipamentos,lupa odontologica binocular,15,200,4000,
-sim,media,equipamentos,ultrassom odontologico,15,300,5000,
 sim,media,consultorio,mocho odontologico,15,200,2500,
 sim,media,vestuario,jaleco feminino acinturado,25,60,400,
 sim,baixa,vestuario,oculos protecao odontologico,25,15,120,
+sim,media,home-care,irrigador oral,20,80,600,Dentistas indicam para pacientes e usam em casa; líder em higiene bucal no ML
+sim,baixa,home-care,escova ortodontica,25,10,80,
 nao,baixa,estudo,livro harmonizacao orofacial,15,50,500,Ativar quando quiser variar o conteúdo

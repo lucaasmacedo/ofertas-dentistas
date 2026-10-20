@@ -45,7 +45,11 @@ com link de afiliado.
   desconto mínimo (%) e faixa de preço (R$). O Lucas edita esse arquivo
   (abre no Excel) para mudar o foco, sem mexer em código.
 - Nunca buscar produtos regulados ou de venda restrita (toxina botulínica,
-  preenchedores/ácido hialurônico injetável, anestésicos, medicamentos).
+  preenchedores/ácido hialurônico injetável, bioestimuladores, fios de
+  sustentação, anestésicos, medicamentos).
+- Produto de uso profissional (dispositivo médico) só entra se o anúncio
+  mostrar registro na Anvisa. Na dúvida, pular: a Anvisa já multou o próprio
+  Mercado Livre por anúncios de produtos sem registro.
 
 ## Como fazer uma rodada (passo a passo para o Claude)
 
