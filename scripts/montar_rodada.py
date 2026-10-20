@@ -33,8 +33,39 @@ PASTA_RODADA = PASTA_PROJETO / "dados" / "rodada"
 ARQ_SAIDA = PASTA_PROJETO / "dados" / "ofertas_rodada.csv"
 ARQ_USADOS = PASTA_PROJETO / "dados" / "termos_usados.csv"
 
-# Categorias de dispositivos médicos: o anúncio precisa citar a Anvisa
-EXIGE_ANVISA = {"hof-giro", "hof-insumos", "descartaveis", "odonto", "esterilizacao", "biosseguranca"}
+# Categorias de dispositivos médicos: precisam de pelo menos UM sinal de confiança
+# (anúncio cita a Anvisa, OU marca da lista config/marcas_confiaveis.csv, OU loja oficial)
+EXIGE_CONFIANCA = {"hof-giro", "hof-insumos", "descartaveis", "odonto", "esterilizacao", "biosseguranca"}
+ARQ_MARCAS = PASTA_PROJETO / "config" / "marcas_confiaveis.csv"
+
+
+def sem_acento(t):
+    return unicodedata.normalize("NFD", t).encode("ascii", "ignore").decode().lower()
+
+
+def ler_marcas():
+    if not ARQ_MARCAS.exists():
+        return []
+    with open(ARQ_MARCAS, encoding="utf-8", newline="") as f:
+        return [sem_acento(l["marca"].strip()) for l in csv.DictReader(f) if l["marca"].strip()]
+
+
+def marca_confiavel(titulo, marcas):
+    """Devolve a marca confiável que aparece no título (palavra inteira), ou None."""
+    t = sem_acento(titulo)
+    return next((m for m in marcas if re.search(r"(^|[^a-z0-9])" + re.escape(m) + r"([^a-z0-9]|$)", t)), None)
+
+
+def sinal_de_confianca(o, info, marcas):
+    """Explica por que o produto é confiável, ou devolve None."""
+    if info.get("anvisa"):
+        return "anvisa"
+    marca = marca_confiavel(o["titulo"] + " " + info.get("titulo", ""), marcas)
+    if marca:
+        return f"marca {marca}"
+    if info.get("loja_oficial"):
+        return "loja oficial"
+    return None
 
 
 def mesmo_produto(titulo_escolhido, titulo_pagina):
@@ -88,6 +119,7 @@ def main():
     links_arq = PASTA_RODADA / "links.json"
     links = json.loads(links_arq.read_text(encoding="utf-8")) if links_arq.exists() else {}
 
+    marcas = ler_marcas()
     linhas, usados = [], []
     for o in selecionadas:
         info = links.get(o["id_anuncio"], {})
@@ -96,8 +128,8 @@ def main():
             print(f"✖ a página aberta era de OUTRO produto ({info.get('titulo', '?')[:40]}): {o['titulo'][:45]}")
         elif not info.get("link"):
             print(f"✖ sem link de afiliado: {o['titulo'][:55]} ({info.get('erro', 'não gerado')})")
-        elif o["categoria"] in EXIGE_ANVISA and not info.get("anvisa"):
-            print(f"✖ sem registro Anvisa no anúncio: {o['titulo'][:55]}")
+        elif o["categoria"] in EXIGE_CONFIANCA and not sinal_de_confianca(o, info, marcas):
+            print(f"✖ sem Anvisa, marca confiável ou loja oficial: {o['titulo'][:55]}")
         else:
             por = info.get("preco") or o["preco_por"]
             de = max(o["preco_de"], por)

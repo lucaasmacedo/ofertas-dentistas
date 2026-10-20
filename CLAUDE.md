@@ -55,9 +55,12 @@ com link de afiliado.
 - Nunca buscar produtos regulados ou de venda restrita (toxina botulínica,
   preenchedores/ácido hialurônico injetável, bioestimuladores, fios de
   sustentação, anestésicos, medicamentos).
-- Produto de uso profissional (dispositivo médico) só entra se o anúncio
-  mostrar registro na Anvisa. Na dúvida, pular: a Anvisa já multou o próprio
-  Mercado Livre por anúncios de produtos sem registro.
+- Produto de uso profissional (dispositivo médico) precisa de pelo menos UM
+  sinal de confiança: anúncio cita a Anvisa, OU marca da lista
+  `config/marcas_confiaveis.csv` (o Lucas edita), OU vendido por loja oficial.
+  Sem nenhum desses, pular: a Anvisa já multou o próprio Mercado Livre por
+  anúncios de produtos sem registro.
+- Sem link de afiliado, a oferta NUNCA vai para o painel.
 
 ## Como fazer uma rodada (passo a passo para o Claude)
 
