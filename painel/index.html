@@ -190,7 +190,7 @@ function card(o) {
       <div class="prices"></div>
       <div class="actions">
         <button class="btn primary" type="button" data-a="copy">Copiar texto</button>
-        <button class="btn" type="button" data-a="img">Salvar imagem</button>
+        <button class="btn" type="button" data-a="img">Copiar imagem</button>
       </div>
       <div class="decide">
         <button class="btn ok" type="button" data-a="ok">Publiquei</button>
@@ -227,7 +227,7 @@ function card(o) {
   if (!state.canWrite || !state.db) { bOk.disabled = true; bNo.disabled = true; }
 
   el.querySelector('[data-a="copy"]').onclick = () => copyText(o.texto, el);
-  bImg.onclick = () => saveImage(o, imgSrc);
+  bImg.onclick = () => copyImage(o, imgSrc);
   bOk.onclick = () => setStatus(o, o.status === "publicada" ? "sugerida" : "publicada");
   bNo.onclick = () => setStatus(o, o.status === "nao_publicada" ? "sugerida" : "nao_publicada");
   return el;
@@ -244,6 +244,31 @@ async function copyText(text, el) {
     if (!ta) { ta = document.createElement("textarea"); ta.className = "fallback"; ta.readOnly = true; ta.id = "fb-" + Math.random().toString(36).slice(2); d.append(ta); }
     ta.value = text; ta.focus(); ta.select();
     toast("Texto selecionado. Toque e segure para copiar.");
+  }
+}
+
+// Converte qualquer imagem em PNG, o formato que a área de transferência aceita
+async function toPng(blob) {
+  const bmp = await createImageBitmap(blob);
+  const cv = document.createElement("canvas");
+  cv.width = bmp.width; cv.height = bmp.height;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(bmp, 0, 0);
+  return new Promise((ok, fail) => cv.toBlob((b) => (b ? ok(b) : fail(new Error("png"))), "image/png"));
+}
+
+async function copyImage(o, src) {
+  try {
+    if (!navigator.clipboard || typeof ClipboardItem === "undefined") throw new Error("sem suporte");
+    // A promessa é criada já no clique: o Safari exige isso para liberar a cópia
+    const png = fetch(src).then((r) => r.blob()).then(toPng);
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
+    toast("Imagem copiada. Cole no WhatsApp.");
+  } catch {
+    // Se o aparelho não deixar copiar imagem, oferece salvar o arquivo
+    toast("Este aparelho não deixou copiar a imagem. Vou oferecer para salvar.");
+    setTimeout(() => saveImage(o, src), 900);
   }
 }
 
