@@ -7,8 +7,13 @@ O que ele faz, em ordem:
   2. Lê o histórico (dados/historico.csv) para controlar repetição.
   3. Aplica as regras: intervalo mínimo, exceção por queda de preço
      e limite por categoria.
-  4. Para cada oferta aprovada: monta o texto do post e baixa a imagem.
-  5. Salva tudo em saida/AAAA-MM-DD/ e registra no histórico como "sugerida".
+  4. Para cada oferta aprovada: monta o texto do post e pega a imagem
+     (baixa pela coluna url_imagem ou copia o arquivo da coluna arquivo_imagem).
+  5. Salva tudo em saida/AAAA-MM-DD/HHhMM/:
+       posts.txt          -> todos os textos, para leitura rápida
+       NN_<id>.jpg        -> imagens
+       painel/NN.json     -> um arquivo por post, pronto para o Painel de Ofertas
+  6. Registra no histórico como "sugerida".
 
 Como rodar (dentro da pasta do projeto):
   python scripts/gerar_posts.py            -> rodada de verdade
@@ -16,6 +21,8 @@ Como rodar (dentro da pasta do projeto):
 """
 
 import csv
+import json
+import shutil
 import sys
 import urllib.request
 from datetime import date, datetime
@@ -67,8 +74,12 @@ def formatar_reais(valor):
 
 
 def ultima_aparicao(historico, id_anuncio):
-    """Procura a última vez que o produto apareceu no histórico."""
-    vezes = [h for h in historico if h["id_anuncio"] == id_anuncio]
+    """
+    Procura a última vez que o produto apareceu no grupo.
+    Ofertas marcadas como "nao_publicada" não contam: o grupo nunca as viu.
+    """
+    vezes = [h for h in historico
+             if h["id_anuncio"] == id_anuncio and h.get("status") != "nao_publicada"]
     if not vezes:
         return None
     return max(vezes, key=lambda h: h["data"])  # datas AAAA-MM-DD ordenam certo
@@ -114,6 +125,25 @@ def montar_texto(oferta):
     return "\n".join(linhas), desconto
 
 
+def pegar_imagem(oferta, destino):
+    """
+    Consegue a imagem do anúncio de um destes jeitos:
+      - arquivo_imagem: caminho de uma imagem já salva -> só copia
+      - url_imagem: endereço da imagem -> baixa
+    Se não der, avisa e segue sem travar a rodada. Devolve True se conseguiu.
+    """
+    arquivo = (oferta.get("arquivo_imagem") or "").strip()
+    if arquivo:
+        origem = Path(arquivo)
+        if not origem.is_absolute():
+            origem = PASTA_PROJETO / origem
+        if origem.exists():
+            shutil.copyfile(origem, destino)
+            return True
+        print(f"   ⚠️  arquivo de imagem não encontrado: {origem}")
+    return baixar_imagem(oferta.get("url_imagem", ""), destino)
+
+
 def baixar_imagem(url, destino):
     """Baixa a imagem do anúncio. Se falhar, avisa e segue sem travar a rodada."""
     if not url:
@@ -148,8 +178,10 @@ def main():
             por_categoria[h["categoria"]] = por_categoria.get(h["categoria"], 0) + 1
 
     # Cada rodada ganha sua própria pasta (data + hora), assim nada é sobrescrito
-    pasta_dia = PASTA_SAIDA / hoje.isoformat() / datetime.now().strftime("%Hh%M")
-    pasta_dia.mkdir(parents=True, exist_ok=True)
+    rodada = datetime.now().strftime("%Hh%M")
+    pasta_dia = PASTA_SAIDA / hoje.isoformat() / rodada
+    pasta_painel = pasta_dia / "painel"
+    pasta_painel.mkdir(parents=True, exist_ok=True)
 
     aprovadas, textos_finais = [], []
     print(f"Rodada de {hoje.strftime('%d/%m/%Y')} - {len(ofertas)} ofertas recebidas\n")
@@ -175,7 +207,29 @@ def main():
         print(f"✅ {numero:02d}. {titulo} -> {motivo}")
 
         imagem = pasta_dia / f"{numero:02d}_{oferta['id_anuncio']}.jpg"
-        baixar_imagem(oferta.get("url_imagem", ""), imagem)
+        tem_imagem = pegar_imagem(oferta, imagem)
+
+        # Documento do Painel de Ofertas (um JSON por post)
+        doc = {
+            "doc_id": f"{hoje.isoformat()}_{rodada}_{numero:02d}",
+            "data": hoje.isoformat(),
+            "rodada": rodada,
+            "ordem": numero,
+            "id_anuncio": oferta["id_anuncio"],
+            "titulo": titulo,
+            "categoria": categoria,
+            "preco_de": para_numero(oferta["preco_de"]),
+            "preco_por": para_numero(oferta["preco_por"]),
+            "desconto_pct": desconto,
+            "link_afiliado": oferta["link_afiliado"],
+            "texto": texto,
+            "status": "sugerida",
+            "exemplo": False,
+            # caminho local da imagem; trocado pelo id do asset ao subir no painel
+            "imagem_arquivo": str(imagem) if tem_imagem else None,
+        }
+        (pasta_painel / f"{numero:02d}.json").write_text(
+            json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
 
         textos_finais.append(f"===== POST {numero:02d} =====\n{texto}\n")
         por_categoria[categoria] = por_categoria.get(categoria, 0) + 1
@@ -194,6 +248,7 @@ def main():
     # Salva todos os textos num arquivo só, fácil de copiar para o WhatsApp
     (pasta_dia / "posts.txt").write_text("\n".join(textos_finais), encoding="utf-8")
     print(f"\n{len(aprovadas)} post(s) prontos em {pasta_dia}")
+    print(f"Pacote do painel em {pasta_painel}")
 
     if simular:
         print("Modo simulação: histórico NÃO foi alterado.")
