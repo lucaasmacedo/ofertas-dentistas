@@ -150,7 +150,9 @@ function render() {
     return;
   }
   // Rodadas, da mais recente para a mais antiga
-  const keys = [...new Set(docs.map(roundKey))].sort().reverse();
+  // Rodadas reais primeiro (mais recente no topo); rodadas de exemplo sempre por último
+  const isEx = (k) => docs.some((o) => roundKey(o) === k && o.exemplo) && !docs.some((o) => roundKey(o) === k && !o.exemplo);
+  const keys = [...new Set(docs.map(roundKey))].sort((a, b) => (isEx(a) - isEx(b)) || (a < b ? 1 : a > b ? -1 : 0));
   if (!state.round || !keys.includes(state.round)) state.round = keys[0];
 
   const nav = $("#rounds");
@@ -161,7 +163,7 @@ function render() {
     b.className = "round"; b.type = "button";
     b.setAttribute("aria-pressed", String(k === state.round));
     b.innerHTML = `<span></span><small></small>`;
-    b.querySelector("span").textContent = `${fmtDate(data)} · ${rodada}`;
+    b.querySelector("span").textContent = isEx(k) ? `Exemplo · ${rodada === "exemplo" ? fmtDate(data) : rodada}` : `${fmtDate(data)} · ${rodada}`;
     b.querySelector("small").textContent = `${n} oferta${n > 1 ? "s" : ""}`;
     b.onclick = () => { state.round = k; render(); };
     return b;
