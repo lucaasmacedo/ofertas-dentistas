@@ -24,6 +24,8 @@ com link de afiliado.
 
 - O Lucas está aprendendo a programar: explique cada passo em português simples.
 - Toda oferta sai com a imagem do anúncio, baixada automaticamente.
-- Nunca repetir oferta que já esteja no histórico.
+- Evitar repetição excessiva, sem proibir repetir: um produto bom pode voltar
+  depois de um intervalo mínimo (padrão: dia sim, dia não). O histórico serve
+  para controlar esse intervalo, não para descartar para sempre.
 - Nunca salvar senhas, tokens ou chaves no código. Usar variáveis de ambiente (`.env`).
 - Código em Python, simples e comentado em português.
