@@ -1,7 +1,8 @@
 # Robô do GitHub que baixa as imagens das ofertas.
 # Dispara sozinho sempre que dados/imagens_pendentes.csv muda no GitHub.
-# O resultado fica guardado como "artifact" da execução (some em 7 dias),
-# de onde o Claude pega as imagens para subir no Painel de Ofertas.
+# Entrega: as imagens vão para o branch "imagens", que é SUBSTITUÍDO a cada
+# execução (guarda só a última leva, para o repositório não ficar pesado).
+# O Claude busca esse branch e sobe as imagens no Painel de Ofertas.
 name: Baixar imagens das ofertas
 
 on:
@@ -9,6 +10,9 @@ on:
     paths:
       - dados/imagens_pendentes.csv
   workflow_dispatch: {}   # permite rodar na mão pela aba Actions
+
+permissions:
+  contents: write         # necessário para gravar o branch "imagens"
 
 jobs:
   baixar:
@@ -20,8 +24,14 @@ jobs:
           python-version: "3.12"
       - run: pip install pillow
       - run: python scripts/baixar_imagens.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: imagens
-          path: imagens_baixadas/
-          retention-days: 7
+      - name: Entregar no branch "imagens"
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd imagens_baixadas
+          git init -q -b imagens
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -q -m "Imagens da rodada (${{ github.sha }})"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}" imagens
