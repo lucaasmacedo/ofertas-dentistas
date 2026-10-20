@@ -1,0 +1,10 @@
+# Segredos (nunca vão para o GitHub)
+.env
+
+# Posts gerados em cada rodada (imagens pesadas)
+saida/
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+.venv/
