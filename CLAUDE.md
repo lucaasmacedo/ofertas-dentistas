@@ -25,6 +25,19 @@ com link de afiliado.
 - `dados/ofertas_rodada.csv` - entrada da rodada (preenchida pela etapa do
   navegador). Formato de exemplo em `dados/exemplo_ofertas.csv`.
 
+## Painel de Ofertas (onde o Lucas vê os posts)
+
+- Página privada: https://claude.ai/artifact/Y9W5arBiM793MoBdtsEAiR
+  (código em `painel/index.html`; republicar sempre neste mesmo link).
+- Os posts ficam no banco do painel, coleção `ofertas`, um documento por post
+  (id `AAAA-MM-DD_HHhMM_NN`). Campos: data, rodada, ordem, id_anuncio, titulo,
+  categoria, preco_de, preco_por, desconto_pct, texto, link_afiliado,
+  imagem_asset, status (sugerida | publicada | nao_publicada), exemplo.
+- Imagens sobem para os assets do painel; o documento guarda o id em `imagem_asset`.
+- Os botões "Publiquei" / "Não publiquei" mudam o `status`. Ao fim do dia,
+  sincronizar esses status de volta para `dados/historico.csv`.
+- Documentos com `exemplo: true` são de demonstração e podem ser apagados.
+
 ## Regras de repetição (configuráveis no topo de gerar_posts.py)
 
 - Mesmo produto só volta depois de 2 dias.

@@ -1,0 +1,289 @@
+<title>Painel de Ofertas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: fila de trabalho de uma coluna no celular; cartões em grade no desktop.
+   Cada cartão = um post pronto para encaminhar no WhatsApp. */
+:root {
+  --bg: #eef3f1;
+  --surface: #ffffff;
+  --ink: #12201b;
+  --muted: #5d6e67;
+  --line: #d6e0dc;
+  --accent: #0b6b5d;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcefe9;
+  --price: #c2410c;
+  --ok: #15803d;
+  --ok-soft: #dcfce7;
+  --no: #b42318;
+  --no-soft: #fde8e7;
+  --bubble: #e7f7df;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1513; --surface: #15211d; --ink: #e5eeea; --muted: #94a8a0; --line: #26352f;
+    --accent: #3fbfa8; --accent-ink: #062520; --accent-soft: #173a33; --price: #fb923c;
+    --ok: #4ade80; --ok-soft: #12321f; --no: #f87171; --no-soft: #3a1717; --bubble: #1d3324;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1513; --surface: #15211d; --ink: #e5eeea; --muted: #94a8a0; --line: #26352f;
+  --accent: #3fbfa8; --accent-ink: #062520; --accent-soft: #173a33; --price: #fb923c;
+  --ok: #4ade80; --ok-soft: #12321f; --no: #f87171; --no-soft: #3a1717; --bubble: #1d3324;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+}
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 6vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+.summary { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--accent-soft); color: var(--accent); font-variant-numeric: tabular-nums; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.no { background: var(--no-soft); color: var(--no); }
+.rounds { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.round {
+  flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 10px; padding: 8px 12px; font: 600 14px var(--font-body); cursor: pointer; text-align: left;
+}
+.round small { display: block; font: 500 12px var(--font-mono); color: var(--muted); }
+.round[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.round[aria-pressed="true"] small { color: var(--accent-ink); opacity: .85; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: grid; min-width: 0; }
+.card.done-ok { border-color: var(--ok); }
+.card.done-no { opacity: .72; }
+.media { position: relative; aspect-ratio: 1 / 1; max-width: 100%; background: var(--accent-soft); display: grid; place-items: center; }
+.media img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.media .noimg { color: var(--muted); font-size: 13px; padding: 16px; text-align: center; }
+.num { position: absolute; top: 10px; left: 10px; font: 500 12px var(--font-mono); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 2px 7px; border: 1px solid var(--line); }
+.tag-ex { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; background: var(--price); color: #fff; border-radius: 6px; padding: 3px 7px; }
+.body { padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.meta { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.cat { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; }
+.status { font-size: 12px; font-weight: 700; }
+.status.sugerida { color: var(--muted); } .status.publicada { color: var(--ok); } .status.nao_publicada { color: var(--no); }
+.title { font-family: var(--font-display); font-weight: 600; font-size: 18px; line-height: 1.2; margin: 0; text-wrap: balance; }
+.prices { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.from { color: var(--muted); text-decoration: line-through; font-size: 14px; }
+.to { font-weight: 700; font-size: 22px; color: var(--ink); }
+.off { font-weight: 700; color: var(--price); font-size: 14px; }
+details { border-top: 1px dashed var(--line); padding-top: 8px; }
+summary { cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 600; }
+.bubble { margin-top: 8px; background: var(--bubble); border-radius: 10px 10px 10px 2px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 14px; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.decide { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+button.btn {
+  font: 600 14px var(--font-body); border-radius: 10px; padding: 11px 10px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 44px;
+}
+button.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+button.btn.ok[aria-pressed="true"] { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+button.btn.no[aria-pressed="true"] { background: var(--no-soft); border-color: var(--no); color: var(--no); }
+button.btn:disabled { opacity: .5; cursor: default; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 28px 20px; display: grid; gap: 8px; max-width: 560px; }
+.empty h2 { font-family: var(--font-display); margin: 0; font-size: 20px; }
+.empty p { margin: 0; color: var(--muted); }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 14px;
+  max-width: calc(100% - 32px);
+}
+.fallback { width: 100%; min-height: 140px; font: 14px var(--font-body); margin-top: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px; }
+@media (prefers-reduced-motion: no-preference) { button.btn { transition: background .15s, border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Grupo de ofertas · Dentistas e HOF</span>
+    <h1>Painel de Ofertas</h1>
+    <div class="summary" id="summary">Carregando as rodadas…</div>
+  </header>
+  <nav class="rounds" id="rounds" aria-label="Rodadas"></nav>
+  <main class="grid" id="grid"></main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const state = { docs: [], round: null, db: null, downloads: null, canWrite: true };
+
+const brl = (n) => "R$ " + Number(n || 0).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+const fmtDate = (iso) => { const [y, m, d] = iso.split("-"); return `${d}/${m}`; };
+const roundKey = (o) => `${o.data}|${o.rodada}`;
+
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2200);
+}
+
+function renderEmpty(title, text) {
+  $("#rounds").replaceChildren();
+  $("#summary").textContent = "";
+  const box = document.createElement("div");
+  box.className = "empty";
+  box.innerHTML = "<h2></h2><p></p>";
+  box.querySelector("h2").textContent = title;
+  box.querySelector("p").textContent = text;
+  $("#grid").replaceChildren(box);
+}
+
+function render() {
+  const docs = state.docs;
+  if (!docs.length) {
+    renderEmpty("Nenhuma rodada ainda", "Quando a primeira rodada de ofertas rodar, os posts aparecem aqui, prontos para copiar e encaminhar no grupo.");
+    return;
+  }
+  // Rodadas, da mais recente para a mais antiga
+  const keys = [...new Set(docs.map(roundKey))].sort().reverse();
+  if (!state.round || !keys.includes(state.round)) state.round = keys[0];
+
+  const nav = $("#rounds");
+  nav.replaceChildren(...keys.slice(0, 20).map((k) => {
+    const [data, rodada] = k.split("|");
+    const n = docs.filter((o) => roundKey(o) === k).length;
+    const b = document.createElement("button");
+    b.className = "round"; b.type = "button";
+    b.setAttribute("aria-pressed", String(k === state.round));
+    b.innerHTML = `<span></span><small></small>`;
+    b.querySelector("span").textContent = `${fmtDate(data)} · ${rodada}`;
+    b.querySelector("small").textContent = `${n} oferta${n > 1 ? "s" : ""}`;
+    b.onclick = () => { state.round = k; render(); };
+    return b;
+  }));
+
+  const list = docs.filter((o) => roundKey(o) === state.round).sort((a, b) => a.ordem - b.ordem);
+  const count = (s) => list.filter((o) => o.status === s).length;
+  const sum = $("#summary");
+  sum.replaceChildren();
+  [["", `${list.length} sugeridas`], ["ok", `${count("publicada")} publicadas`], ["no", `${count("nao_publicada")} não publicadas`]]
+    .forEach(([cls, txt]) => { const p = document.createElement("span"); p.className = "pill " + cls; p.textContent = txt; sum.append(p); });
+
+  $("#grid").replaceChildren(...list.map(card));
+}
+
+const STATUS_LABEL = { sugerida: "Aguardando", publicada: "Publicada", nao_publicada: "Não publicada" };
+
+function card(o) {
+  const el = document.createElement("article");
+  el.className = "card" + (o.status === "publicada" ? " done-ok" : o.status === "nao_publicada" ? " done-no" : "");
+  el.innerHTML = `
+    <div class="media"><span class="num"></span></div>
+    <div class="body">
+      <div class="meta"><span class="cat"></span><span class="status"></span></div>
+      <h2 class="title"></h2>
+      <div class="prices"></div>
+      <div class="actions">
+        <button class="btn primary" type="button" data-a="copy">Copiar texto</button>
+        <button class="btn" type="button" data-a="img">Salvar imagem</button>
+      </div>
+      <div class="decide">
+        <button class="btn ok" type="button" data-a="ok">Publiquei</button>
+        <button class="btn no" type="button" data-a="no">Não publiquei</button>
+      </div>
+      <details><summary>Ver mensagem</summary><div class="bubble"></div></details>
+    </div>`;
+  const media = el.querySelector(".media");
+  el.querySelector(".num").textContent = String(o.ordem).padStart(2, "0");
+  if (o.exemplo) { const t = document.createElement("span"); t.className = "tag-ex"; t.textContent = "Exemplo"; media.append(t); }
+  const imgSrc = o.imagem_url || (o.imagem_asset ? "/_blob/" + o.imagem_asset : "");
+  if (imgSrc) {
+    const img = document.createElement("img"); img.src = imgSrc; img.alt = o.titulo; img.loading = "lazy";
+    media.prepend(img);
+  } else {
+    const n = document.createElement("span"); n.className = "noimg"; n.textContent = "Sem imagem nesta oferta"; media.prepend(n);
+  }
+  el.querySelector(".cat").textContent = o.categoria || "outros";
+  const st = el.querySelector(".status"); st.textContent = STATUS_LABEL[o.status] || o.status; st.classList.add(o.status);
+  el.querySelector(".title").textContent = o.titulo;
+  const pr = el.querySelector(".prices");
+  if (o.preco_de > o.preco_por) {
+    const f = document.createElement("span"); f.className = "from"; f.textContent = brl(o.preco_de); pr.append(f);
+  }
+  const t = document.createElement("span"); t.className = "to"; t.textContent = brl(o.preco_por); pr.append(t);
+  if (o.desconto_pct > 0) { const off = document.createElement("span"); off.className = "off"; off.textContent = `${o.desconto_pct}% OFF`; pr.append(off); }
+  el.querySelector(".bubble").textContent = o.texto;
+
+  const bImg = el.querySelector('[data-a="img"]');
+  if (!imgSrc) bImg.disabled = true;
+  const bOk = el.querySelector('[data-a="ok"]'), bNo = el.querySelector('[data-a="no"]');
+  bOk.setAttribute("aria-pressed", String(o.status === "publicada"));
+  bNo.setAttribute("aria-pressed", String(o.status === "nao_publicada"));
+  if (!state.canWrite || !state.db) { bOk.disabled = true; bNo.disabled = true; }
+
+  el.querySelector('[data-a="copy"]').onclick = () => copyText(o.texto, el);
+  bImg.onclick = () => saveImage(o, imgSrc);
+  bOk.onclick = () => setStatus(o, o.status === "publicada" ? "sugerida" : "publicada");
+  bNo.onclick = () => setStatus(o, o.status === "nao_publicada" ? "sugerida" : "nao_publicada");
+  return el;
+}
+
+async function copyText(text, el) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Texto copiado. Cole no WhatsApp.");
+  } catch {
+    // Alguns apps bloqueiam a área de transferência: mostra o texto selecionado
+    const d = el.querySelector("details"); d.open = true;
+    let ta = el.querySelector("textarea.fallback");
+    if (!ta) { ta = document.createElement("textarea"); ta.className = "fallback"; ta.readOnly = true; ta.id = "fb-" + Math.random().toString(36).slice(2); d.append(ta); }
+    ta.value = text; ta.focus(); ta.select();
+    toast("Texto selecionado. Toque e segure para copiar.");
+  }
+}
+
+async function saveImage(o, src) {
+  if (!state.downloads) { toast("Toque e segure a imagem para salvar."); return; }
+  try {
+    const blob = await (await fetch(src)).blob();
+    const ext = (blob.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
+    const r = await state.downloads.save({ filename: `oferta-${String(o.ordem).padStart(2, "0")}.${ext}`, data: blob });
+    if (r.status === "saved") toast("Imagem salva.");
+  } catch (e) {
+    if (e && e.code === "declined") return;
+    toast("Não deu para salvar. Toque e segure a imagem.");
+  }
+}
+
+async function setStatus(o, status) {
+  if (!state.db) return;
+  try {
+    await state.db.doc("ofertas/" + o._id).update({ status, atualizado_em: new Date().toISOString() });
+    toast(status === "publicada" ? "Marcada como publicada." : status === "nao_publicada" ? "Marcada como não publicada." : "Voltou para aguardando.");
+  } catch (e) {
+    if (e && e.code === "invalid_argument") { state.canWrite = false; render(); toast("Você só pode ver este painel."); }
+    else toast("Não salvou. Tente de novo em instantes.");
+  }
+}
+
+(async () => {
+  render();
+  const db = await claude.use("db");
+  if (!db) { renderEmpty("Painel indisponível aqui", "Abra este painel pelo Claude, com sua conta, para ver as ofertas."); return; }
+  state.db = db;
+  claude.use("downloads").then((d) => (state.downloads = d));
+  claude.use("user").then(async (u) => {
+    const can = u ? await u.can("data.write") : null;
+    if (can === false) { state.canWrite = false; render(); }
+  });
+  db.collection("ofertas").orderBy("data", "desc").limit(1000).onSnapshot(
+    (snap) => { state.docs = snap.docs.map((d) => ({ _id: d.id, ...d.data() })); render(); },
+    () => renderEmpty("Não deu para carregar", "Recarregue a página em alguns instantes.")
+  );
+})();
+</script>
