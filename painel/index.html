@@ -84,6 +84,7 @@ details { border-top: 1px dashed var(--line); padding-top: 8px; }
 summary { cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 600; }
 .bubble { margin-top: 8px; background: var(--bubble); border-radius: 10px 10px 10px 2px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 14px; }
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.actions .wide { grid-column: 1 / -1; }
 .decide { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 button.btn {
   font: 600 14px var(--font-body); border-radius: 10px; padding: 11px 10px; cursor: pointer;
@@ -193,6 +194,7 @@ function card(o) {
       <div class="actions">
         <button class="btn primary" type="button" data-a="copy">Copiar texto</button>
         <button class="btn" type="button" data-a="img">Copiar imagem</button>
+        <button class="btn wide" type="button" data-a="dl">⬇ Baixar imagem</button>
       </div>
       <div class="decide">
         <button class="btn ok" type="button" data-a="ok">Publiquei</button>
@@ -222,7 +224,8 @@ function card(o) {
   el.querySelector(".bubble").textContent = o.texto;
 
   const bImg = el.querySelector('[data-a="img"]');
-  if (!imgSrc) bImg.disabled = true;
+  const bDl = el.querySelector('[data-a="dl"]');
+  if (!imgSrc) { bImg.disabled = true; bDl.disabled = true; }
   const bOk = el.querySelector('[data-a="ok"]'), bNo = el.querySelector('[data-a="no"]');
   bOk.setAttribute("aria-pressed", String(o.status === "publicada"));
   bNo.setAttribute("aria-pressed", String(o.status === "nao_publicada"));
@@ -230,6 +233,7 @@ function card(o) {
 
   el.querySelector('[data-a="copy"]').onclick = () => copyText(o.texto, el);
   bImg.onclick = () => copyImage(o, imgSrc);
+  bDl.onclick = () => saveImage(o, imgSrc);
   bOk.onclick = () => setStatus(o, o.status === "publicada" ? "sugerida" : "publicada");
   bNo.onclick = () => setStatus(o, o.status === "nao_publicada" ? "sugerida" : "nao_publicada");
   return el;
@@ -279,7 +283,7 @@ async function saveImage(o, src) {
   try {
     const blob = await (await fetch(src)).blob();
     const ext = (blob.type.split("/")[1] || "jpg").replace("jpeg", "jpg");
-    const r = await state.downloads.save({ filename: `oferta-${String(o.ordem).padStart(2, "0")}.${ext}`, data: blob });
+    const r = await state.downloads.save({ filename: `oferta-${o.data || ""}-${String(o.rodada || "").replace(/\W/g, "")}-${String(o.ordem).padStart(2, "0")}.${ext}`, data: blob });
     if (r.status === "saved") toast("Imagem salva.");
   } catch (e) {
     if (e && e.code === "declined") return;
