@@ -17,8 +17,12 @@ import json
 import sys
 from pathlib import Path
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nicho  # pastas e preferências do nicho (NICHO=aquarismo, etc.)
+
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
-ARQ_HISTORICO = PASTA_PROJETO / "dados" / "historico.csv"
+ARQ_HISTORICO = nicho.PASTA_DADOS / "historico.csv"
 
 
 def ler_status_do_painel(pasta):
@@ -29,6 +33,9 @@ def ler_status_do_painel(pasta):
         # A exportação pode vir "embrulhada" em {"data": {...}}
         campos = doc.get("data") if isinstance(doc.get("data"), dict) else doc
         if campos.get("exemplo"):
+            continue
+        # só os posts da especialidade deste nicho (posts antigos sem o campo = Dentistas e HOF)
+        if campos.get("especialidade", "Dentistas e HOF") != nicho.ESPECIALIDADE:
             continue
         chave = (campos.get("data"), campos.get("id_anuncio"))
         if all(chave):

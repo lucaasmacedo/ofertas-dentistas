@@ -28,6 +28,9 @@ from pathlib import Path
 
 ESPECIALIDADE_PADRAO = "Dentistas e HOF"
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nicho  # noqa: E402
+
 
 def slug(texto):
     """'Aquarismo' -> 'aquarismo'; 'Pet Shop' -> 'pet-shop' (sem acentos)."""
@@ -38,7 +41,7 @@ def slug(texto):
 def main():
     pasta = Path(sys.argv[1])
     mapa = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8")) if len(sys.argv) > 2 else {}
-    especialidade = sys.argv[3] if len(sys.argv) > 3 else ESPECIALIDADE_PADRAO
+    especialidade = sys.argv[3] if len(sys.argv) > 3 else nicho.ESPECIALIDADE
     for arq in sorted(pasta.glob("[0-9][0-9].json")):
         doc = json.loads(arq.read_text(encoding="utf-8"))
         doc_id = doc.pop("doc_id")

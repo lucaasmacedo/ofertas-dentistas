@@ -28,15 +28,19 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nicho  # pastas e preferências do nicho (NICHO=aquarismo, etc.)
+
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
-PASTA_RODADA = PASTA_PROJETO / "dados" / "rodada"
-ARQ_SAIDA = PASTA_PROJETO / "dados" / "ofertas_rodada.csv"
-ARQ_USADOS = PASTA_PROJETO / "dados" / "termos_usados.csv"
+PASTA_RODADA = nicho.PASTA_RODADA
+ARQ_SAIDA = nicho.PASTA_DADOS / "ofertas_rodada.csv"
+ARQ_USADOS = nicho.PASTA_DADOS / "termos_usados.csv"
 
 # Categorias de dispositivos médicos: precisam de pelo menos UM sinal de confiança
 # (anúncio cita a Anvisa, OU marca da lista config/marcas_confiaveis.csv, OU loja oficial)
-EXIGE_CONFIANCA = {"hof-giro", "hof-insumos", "descartaveis", "odonto", "esterilizacao", "biosseguranca"}
-ARQ_MARCAS = PASTA_PROJETO / "config" / "marcas_confiaveis.csv"
+EXIGE_CONFIANCA = nicho.EXIGE_CONFIANCA  # definido em config/<nicho>/nicho.json
+ARQ_MARCAS = nicho.PASTA_CONFIG / "marcas_confiaveis.csv"
 
 
 def sem_acento(t):
@@ -58,7 +62,7 @@ def marca_confiavel(titulo, marcas):
 
 def sinal_de_confianca(o, info, marcas):
     """Explica por que o produto é confiável, ou devolve None."""
-    if info.get("anvisa"):
+    if nicho.MOSTRAR_ANVISA and info.get("anvisa"):
         return "anvisa"
     marca = marca_confiavel(o["titulo"] + " " + info.get("titulo", ""), marcas)
     if marca:
@@ -104,7 +108,7 @@ def por_que_vale(o, anvisa):
         partes.append("envio Full")
     elif o["frete_gratis"]:
         partes.append("frete grátis")
-    if anvisa:
+    if anvisa and nicho.MOSTRAR_ANVISA:
         partes.append("registro Anvisa")
     texto = " · ".join(partes)
     return texto[:1].upper() + texto[1:] if texto else ""

@@ -44,6 +44,21 @@ com link de afiliado.
   `python scripts/preparar_painel.py <pasta>/painel <mapa.json> "Aquarismo"`
   (o doc_id ganha o prefixo `aquarismo_` para não colidir com outras abas).
 
+## Vários nichos (especialidades)
+
+- O projeto atende mais de um grupo. A variável de ambiente `NICHO` escolhe qual:
+  vazia = Dentistas e HOF (`config/`, `dados/`, `saida/`, como sempre foi);
+  `NICHO=aquarismo` = `config/aquarismo/`, `dados/aquarismo/`, `saida/aquarismo/`.
+  Quem resolve isso é `scripts/nicho.py`.
+- Cada nicho tem `nichos.csv`, `marcas_confiaveis.csv` e `nicho.json` (aba do painel,
+  emoji do post, se mostra "registro Anvisa" e quais categorias exigem sinal de confiança).
+- Skills: `/ofertas-hof` (dentistas) e `/ofertas-aquarismo` (aquário,
+  `.claude/skills/ofertas-aquarismo/SKILL.md`).
+- `dados/imagens_pendentes.csv` é um só (dispara o robô de imagens).
+- Para criar um nicho novo: copiar `config/aquarismo/` para `config/<nome>/`, ajustar os
+  três arquivos, criar `dados/<nome>/` com `historico.csv` e `termos_usados.csv` só com o
+  cabeçalho, e acrescentar o nome da aba em `ESPECIALIDADES` no `painel/index.html`.
+
 ## Nichos (o que buscar)
 
 - `config/nichos.csv` define o que a etapa do navegador busca: só linhas com
@@ -114,6 +129,11 @@ com link de afiliado.
   3. `git clone --depth 1 -b imagens` e usar os arquivos em `arquivo_imagem`.
   Disparo manual: `gh api -X POST repos/lucaasmacedo/ofertas-dentistas/actions/workflows/baixar-imagens.yml/dispatches -f ref=main`
   (o `gh workflow run` não funciona aqui).
+
+- Lições de 22 a 29/10/2026: no máximo 3 ou 4 termos por `browser_batch` (lotes maiores
+  estouram o tempo e continuam rodando em segundo plano). Guardar a função de busca em
+  `sessionStorage` na 1ª chamada e reaproveitar (vale por domínio). Conferir que o
+  usuário logado é "Lucas": o perfil do Mac 92969a82... é do Leandro e não serve.
 
 ## Sincronizar o que foi publicado
 

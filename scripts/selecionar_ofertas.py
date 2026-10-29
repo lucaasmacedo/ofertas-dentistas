@@ -29,8 +29,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from gerar_posts import ARQ_HISTORICO, ler_csv, pode_postar  # reaproveita as regras
 
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
-PASTA_RODADA = PASTA_PROJETO / "dados" / "rodada"
-ARQ_IMAGENS = PASTA_PROJETO / "dados" / "imagens_pendentes.csv"
+import nicho  # noqa: E402
+PASTA_RODADA = nicho.PASTA_RODADA
+ARQ_IMAGENS = nicho.ARQ_IMAGENS
 
 # Produtos regulados que nunca entram (o título é comparado sem acentos).
 # Atenção: "preenchimento" sozinho NÃO entra aqui, porque cânulas e seringas

@@ -28,6 +28,10 @@ import urllib.request
 from datetime import date, datetime
 from pathlib import Path
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nicho  # pastas e preferências do nicho (NICHO=aquarismo, etc.)
+
 # ---------------------------------------------------------------
 # CONFIGURAÇÕES (mude aqui quando quiser ajustar as regras)
 # ---------------------------------------------------------------
@@ -37,9 +41,9 @@ MAX_POSTS_POR_RODADA = 10  # máximo de posts gerados por rodada
 
 # Caminhos dos arquivos (a pasta do projeto é a "mãe" da pasta scripts)
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
-ARQ_OFERTAS = PASTA_PROJETO / "dados" / "ofertas_rodada.csv"
-ARQ_HISTORICO = PASTA_PROJETO / "dados" / "historico.csv"
-PASTA_SAIDA = PASTA_PROJETO / "saida"
+ARQ_OFERTAS = nicho.PASTA_DADOS / "ofertas_rodada.csv"
+ARQ_HISTORICO = nicho.PASTA_DADOS / "historico.csv"
+PASTA_SAIDA = nicho.PASTA_SAIDA
 
 COLUNAS_HISTORICO = [
     "data", "id_anuncio", "titulo", "categoria",
@@ -116,7 +120,7 @@ def montar_texto(oferta):
     # Se o preço com desconto vale só no Pix, o post precisa dizer isso
     no_pix = " no Pix" if str(oferta.get("so_pix", "")).strip().lower() in ("sim", "true", "1") else ""
 
-    linhas = [f"🦷 *{oferta['titulo']}*", ""]
+    linhas = [f"{nicho.EMOJI} *{oferta['titulo']}*", ""]
     if desconto > 0:
         linhas.append(f"~De {formatar_reais(preco_de)}~")
         linhas.append(f"🔥 *Por {formatar_reais(preco_por)}{no_pix}* ({desconto}% OFF)")

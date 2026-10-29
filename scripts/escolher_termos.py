@@ -20,10 +20,14 @@ import random
 import sys
 from pathlib import Path
 
+import sys as _sys
+_sys.path.insert(0, str(Path(__file__).resolve().parent))
+import nicho  # pastas e preferências do nicho (NICHO=aquarismo, etc.)
+
 PASTA_PROJETO = Path(__file__).resolve().parent.parent
-ARQ_NICHOS = PASTA_PROJETO / "config" / "nichos.csv"
-ARQ_USADOS = PASTA_PROJETO / "dados" / "termos_usados.csv"
-PASTA_RODADA = PASTA_PROJETO / "dados" / "rodada"
+ARQ_NICHOS = nicho.PASTA_CONFIG / "nichos.csv"
+ARQ_USADOS = nicho.PASTA_DADOS / "termos_usados.csv"
+PASTA_RODADA = nicho.PASTA_RODADA
 
 PESOS = {"alta": 0.6, "media": 0.3, "baixa": 0.1}
 

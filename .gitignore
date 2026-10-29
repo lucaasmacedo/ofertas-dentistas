@@ -10,3 +10,4 @@ __pycache__/
 .venv/
 imagens_baixadas/
 dados/rodada/
+dados/*/rodada/

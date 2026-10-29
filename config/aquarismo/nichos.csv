@@ -1,0 +1,23 @@
+ativo,prioridade,categoria,termo_busca,desconto_min,preco_min,preco_max,observacao
+sim,alta,aquario-giro,racao peixe tropical,20,10,200,Giro: alimentação
+sim,alta,aquario-giro,racao betta,20,8,100,Giro: alimentação
+sim,alta,aquario-giro,racao peixe fundo pastilha,20,10,150,Giro: cascudos e corydoras
+sim,alta,aquario-quimicos,condicionador agua aquario,20,15,150,Giro: anticloro
+sim,alta,aquario-quimicos,bacterias aquario ciclagem,20,15,200,Giro: acelerador biológico
+sim,alta,aquario-quimicos,teste ph aquario,20,15,250,Giro: testes de água
+sim,alta,aquario-quimicos,teste amonia aquario,20,15,250,Giro: testes de água
+sim,alta,aquario-giro,midia filtrante ceramica aquario,20,15,200,Giro: filtragem
+sim,alta,aquario-giro,carvao ativado aquario,20,10,150,Giro: filtragem
+sim,alta,aquario-giro,refil filtro aquario,20,10,150,Giro: perlon e esponjas
+sim,media,aquario-equipamentos,filtro hang on aquario,20,40,500,Equipamento
+sim,media,aquario-equipamentos,filtro canister aquario,15,150,1500,Equipamento
+sim,media,aquario-equipamentos,termostato aquecedor aquario,20,40,400,Equipamento
+sim,media,aquario-equipamentos,bomba submersa aquario,20,40,500,Equipamento
+sim,media,aquario-equipamentos,luminaria led aquario,20,50,800,Equipamento
+sim,media,aquario-equipamentos,compressor ar aquario,20,30,300,Equipamento
+sim,media,aquario-acessorios,sifao limpeza aquario,20,15,200,Manutenção
+sim,media,aquario-quimicos,fertilizante aquario plantado,20,20,200,Plantado
+sim,baixa,aquario-acessorios,aquario completo kit,15,150,2000,Montagem
+sim,baixa,aquario-acessorios,substrato fertil aquario plantado,20,30,400,Plantado
+sim,baixa,aquario-equipamentos,co2 aquario plantado kit,15,100,1500,Plantado
+sim,baixa,aquario-acessorios,termometro digital aquario,20,15,150,Monitoramento

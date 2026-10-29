@@ -1,0 +1,6 @@
+{
+  "especialidade": "Aquarismo",
+  "emoji": "🐠",
+  "mostrar_anvisa": false,
+  "exige_confianca": ["aquario-giro", "aquario-quimicos", "aquario-equipamentos"]
+}
