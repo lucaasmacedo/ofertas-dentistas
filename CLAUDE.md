@@ -37,6 +37,12 @@ com link de afiliado.
 - Os botões "Publiquei" / "Não publiquei" mudam o `status`. Ao fim do dia,
   sincronizar esses status de volta para `dados/historico.csv`.
 - Documentos com `exemplo: true` são de demonstração e podem ser apagados.
+- **Especialidades (abas do painel):** cada post tem o campo `especialidade`
+  (padrão "Dentistas e HOF"; posts antigos sem o campo contam como essa). A lista
+  de abas fica na constante `ESPECIALIDADES` em `painel/index.html` (hoje:
+  "Dentistas e HOF", "Aquarismo"). Para enviar uma rodada de outra especialidade:
+  `python scripts/preparar_painel.py <pasta>/painel <mapa.json> "Aquarismo"`
+  (o doc_id ganha o prefixo `aquarismo_` para não colidir com outras abas).
 
 ## Nichos (o que buscar)
 
