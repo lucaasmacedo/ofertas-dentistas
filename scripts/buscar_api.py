@@ -75,7 +75,7 @@ def relevante(titulo, chaves):
 
 def miolo_imagem(url):
     """Pega só o miolo do nome da foto (o resto o robô de imagens monta)."""
-    m = re.search(r"D_\w+?_(?:2X_)?(.+?)-[A-Z]\.\w+$", url or "")
+    m = re.search(r"(\d+-ML[A-Z]\d+_\d+)", url or "")
     return m.group(1) if m else ""
 
 
