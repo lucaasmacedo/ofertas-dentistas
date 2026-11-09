@@ -1,0 +1,10 @@
+ERRO  microcanula 22g 50mm: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  seringa 3ml luer lock caixa: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  touca descartavel sanfonada: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  lapis dermatografico branco marcacao: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  agulha 26g 13x4,5 caixa: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  seringa 1ml luer lock caixa: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  protetor solar facial com cor: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  indicador biologico autoclave: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  ponta diamantada kit: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
+ERRO  paquimetro digital: HTTP 403: {"message":"forbidden","error":"forbidden","status":403,"cause":[]}
